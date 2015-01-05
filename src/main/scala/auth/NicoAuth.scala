@@ -1,10 +1,7 @@
 package auth
 
-import java.io.{InputStreamReader, BufferedReader, PrintStream}
+import java.io.PrintStream
 import java.net.{URL, CookieHandler, CookieManager}
-import java.util
-import java.util.stream.Collectors
-import scala.collection.JavaConversions._
 import scala.util.control.NonFatal
 
 /**
@@ -19,7 +16,6 @@ object NicoAuth {
 
     val loginUrl = "https://secure.nicovideo.jp/secure/login?site=niconico"
 
-//    var bufferedReader: BufferedReader = null
     try{
       val connect = new URL(loginUrl).openConnection()
       // POST可能にする
@@ -34,15 +30,9 @@ object NicoAuth {
       printStream.close()
 
       // postした結果の取得
-      val inputStream = connect.getInputStream
-//      bufferedReader = new BufferedReader(new InputStreamReader(inputStream))
+      connect.getInputStream
     } catch {
       case NonFatal(e) => System.exit(0)
-    } finally {
-//      bufferedReader.close()
     }
-
-//    cookieManager.getCookieStore.getCookies.foreach(println)
-
   }
 }
