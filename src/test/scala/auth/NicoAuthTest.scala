@@ -5,15 +5,15 @@ package auth
  */
 
 import conf.Configuration
+import core.Search
 import org.specs2.mutable._
 import scala.collection.JavaConversions._
 
 class NicoAuthTest extends Specification {
   "NicoAuth.authenticate" should {
     "get cookie" in {
-      NicoAuth.cookieManager.getCookieStore.getCookies.size() must_== 0
-      NicoAuth.authenticate(Configuration.email, Configuration.password)
-      NicoAuth.cookieManager.getCookieStore.getCookies.size() must_== 1
+      val cookie = NicoAuth.authenticate(Configuration.email, Configuration.password)
+      cookie must beSome
     }
   }
 

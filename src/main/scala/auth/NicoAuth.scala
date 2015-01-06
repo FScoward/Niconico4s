@@ -1,23 +1,24 @@
 package auth
 
 import java.io.PrintStream
-import java.net.{URL, CookieHandler, CookieManager}
+import java.net._
+import javax.net.ssl.HttpsURLConnection
 import scala.util.control.NonFatal
 
+import scala.collection.JavaConversions._
 /**
  * Created by FScoward on 15/01/05.
  */
 object NicoAuth {
-  val cookieManager = new CookieManager()
+  val cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL)
 
-  def authenticate(mail: String, password: String) = {
+  def authenticate(mail: String, password: String): Option[Cookie] = {
     // Cookieを使用可能にする
-    CookieHandler.setDefault(cookieManager)
 
     val loginUrl = "https://secure.nicovideo.jp/secure/login?site=niconico"
 
     try{
-      val connect = new URL(loginUrl).openConnection()
+      val connect = new URL(loginUrl).openConnection().asInstanceOf[HttpsURLConnection]
       // POST可能にする
       connect.setDoOutput(true)
 
@@ -31,8 +32,17 @@ object NicoAuth {
 
       // postした結果の取得
       connect.getInputStream
+      val cookie = connect.getHeaderFields.get("Set-Cookie").filter(_.matches("user_session=user_session.*")).mkString.split(";")
+
+      Option(
+        Cookie(
+          cookie(0),//.replace("user_session=", ""),
+          cookie(1),//.replace("expires=", ""),
+          cookie(2),//.replace("path=", ""),
+          cookie(3)//.replace("domain=", "")
+        ))
     } catch {
-      case NonFatal(e) => System.exit(0)
+      case NonFatal(e) => None
     }
   }
 }
