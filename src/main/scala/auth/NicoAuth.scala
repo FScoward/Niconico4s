@@ -10,7 +10,6 @@ import scala.collection.JavaConversions._
  * Created by FScoward on 15/01/05.
  */
 object NicoAuth {
-  val cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL)
 
   def authenticate(mail: String, password: String): Option[Cookie] = {
 
