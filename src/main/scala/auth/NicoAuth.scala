@@ -13,7 +13,6 @@ object NicoAuth {
   val cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL)
 
   def authenticate(mail: String, password: String): Option[Cookie] = {
-    // Cookieを使用可能にする
 
     val loginUrl = "https://secure.nicovideo.jp/secure/login?site=niconico"
 
