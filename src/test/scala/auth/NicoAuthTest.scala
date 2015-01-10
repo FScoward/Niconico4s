@@ -5,7 +5,7 @@ package auth
  */
 
 import conf.Configuration
-import core.Search
+import core.input.Keyword
 import org.specs2.mutable._
 import scala.collection.JavaConversions._
 
