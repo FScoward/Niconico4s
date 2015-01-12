@@ -1,14 +1,11 @@
 package core
 
 import java.io._
-
-
 import java.net._
 import java.util.stream.Collectors
 import auth.{Cookie, NicoAuth}
 import core.input.{Service, Keyword, Query, Join}
 import core.output.Result
-import scala.util.parsing.json.JSONArray
 import scalaz._, Scalaz._
 import argonaut._, Argonaut._
 
@@ -71,7 +68,7 @@ object SearchNico {
     Parse.decodeOption[DataInfoList](json)
   }
 
-  def search = {
+  def search(query: Query): Option[List[output.Value]] = {
     val endpoint = "http://api.search.nicovideo.jp/api/snapshot/"
 
     val connect = new URL(endpoint).openConnection().asInstanceOf[HttpURLConnection]
@@ -80,7 +77,7 @@ object SearchNico {
     connect.setRequestProperty("Content-Type", "application/json; charset=utf8")
 
     val outputStream = connect.getOutputStream
-    val postData = Query("高垣彩陽", List(Service.video), Keyword(), List(Join.cmsid, Join.title), None, None, None, None, None, "issue").jencode.nospaces
+    val postData = query.jencode.nospaces
 
     //    val outputStremWriter = new OutputStreamWriter(outputStream)
     // データをpostする
@@ -91,11 +88,10 @@ object SearchNico {
     val is: InputStream = connect.getInputStream
     val br = new BufferedReader(new InputStreamReader(is, "UTF-8"))
 
-    val result = br.lines().collect(Collectors.toList()).mkString
-    println(result)
-    
-    result.decodeOption[Result].map(r=>println(r.dqnid))
-    
+    val result = br.lines().collect(Collectors.toList()).mkString("\n").split("\n")
+
+    val encodedResult = result(0).decodeOption[Result]
+    encodedResult.flatMap(result => result.values)
   }
- 
 }
+

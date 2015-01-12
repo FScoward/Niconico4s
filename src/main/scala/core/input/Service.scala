@@ -5,11 +5,12 @@ package core.input
  */
 
 import argonaut.Argonaut._
-import argonaut.EncodeJson
+import argonaut.{DecodeJson, CodecJson, EncodeJson}
 
 sealed abstract class Service
 object Service {
   case object video extends Service
+
   implicit def VideoEncodeJson: EncodeJson[Service] = {
     EncodeJson((s: Service) => jString(s.toString))
   }
