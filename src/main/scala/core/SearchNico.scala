@@ -68,6 +68,11 @@ object SearchNico {
     Parse.decodeOption[DataInfoList](json)
   }
 
+  /**
+   * @param query 検索クエリ
+   * @author FScoward
+   * @return {{{Either[IOException, Option[List[Value]]]}}}
+   * */
   def search(query: Query): Either[IOException, Option[List[output.Value]]] = {
     val endpoint = "http://api.search.nicovideo.jp/api/snapshot/"
 
