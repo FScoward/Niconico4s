@@ -6,7 +6,7 @@ package core
 
 import auth.{Cookie, NicoAuth}
 import conf.Configuration
-import core.input.{Query, Service, Keyword, Join}
+import core.input._
 import org.specs2.mutable._
 
 class SearchSpec extends Specification {
@@ -18,7 +18,7 @@ class SearchSpec extends Specification {
         val result = Search.search(cookie, "大橋彩香")
       }
       */
-      val query = Query("高垣彩陽", List(Service.video), Keyword(), List(Join.cmsid, Join.title, Join.view_counter), None, Some("start_time"), None, None, None, "NicoNico4s")
+      val query = Query("高垣彩陽", List(Service.video), Keyword(), List(Join.cmsid, Join.title, Join.view_counter), None, Some(SortBy.start_time), None, None, None, "NicoNico4s")
       SearchNico.search(query) must beRight
     }
   }
