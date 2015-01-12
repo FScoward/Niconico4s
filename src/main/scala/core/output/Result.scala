@@ -6,7 +6,7 @@ import argonaut._
 /**
  * Created by FScoward on 2015/01/11.
  */
-case class Result(dqnid: String, `type`: String, values: Option[List[core.output.Value]], endofstream: Option[String])
+case class Result(dqnid: String, `type`: String, values: Option[List[core.output.Value]], endofstream: Option[Boolean])
 object Result {
   implicit def ResultCodecJson: CodecJson[Result] = {
     casecodec4(Result.apply, Result.unapply)("dqnid", "type", "values", "endofstream")
