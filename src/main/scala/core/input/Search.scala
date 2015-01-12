@@ -17,12 +17,4 @@ object Search {
       case tag: Tag => tag.tags_exact.asJson -->>: jEmptyArray
     })
   }
-   
-  /*
-    implicit def SearchEncodeJson: EncodeJson[Keyword] = {
-    EncodeJson(s => {
-      s.title.asJson -->>: s.description.asJson -->>: s.tags.asJson -->>: jEmptyArray
-    })
-  }
-  */
 }
