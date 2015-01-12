@@ -5,7 +5,7 @@ package core.input
  */
 
 import argonaut.Argonaut._
-import argonaut.EncodeJson
+import argonaut.{Argonaut, EncodeJson}
 
 case class Query(query: String,
                   service: List[Service],
@@ -19,8 +19,9 @@ case class Query(query: String,
                   issuer: String)
 
 object Query{
-  implicit def QueryEncodeJson: EncodeJson[Query] = {
-    jencode10L((q: Query) => (q.query, q.service, q.search, q.join, q.filters, q.sort_by, q.order, q.from, q.size, q.issuer))("query", "service", "search", "join", "filters", "sort_by", "order", "from", "size", "issuer")
-  }
+  implicit def QueryEncodeJson: EncodeJson[Query] =
+    Argonaut.jencode10L(Function.unlift(unapply))(
+      "query", "service", "search", "join", "filters", "sort_by", "order", "from", "size", "issue"
+    )
 }
 
