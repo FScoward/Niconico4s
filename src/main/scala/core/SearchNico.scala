@@ -2,10 +2,11 @@ package core
 
 import java.io._
 import java.net._
+import java.util.Date
 import java.util.stream.Collectors
 import auth.{Cookie, NicoAuth}
 import core.input.{Service, Keyword, Query, Join}
-import core.output.Result
+import core.output.{LastModified, Result}
 import scalaz._, Scalaz._
 import argonaut._, Argonaut._
 
@@ -69,6 +70,8 @@ object SearchNico {
   }
 
   /**
+   * 検索を行う
+   * 
    * @param query 検索クエリ
    * @author FScoward
    * @return {{{Either[IOException, Option[List[Value]]]}}}
@@ -113,6 +116,38 @@ object SearchNico {
         br.close()
       }
     }
+  }
+  
+  /**
+   * 切り替え日時の取得を行う
+   * 
+   * @return {{{Either[IOException, Option[LastModified]]}}}
+   * */
+  def getLastModified: Either[IOException, Option[LastModified]] = {
+    
+    // 切り替え日時の取得先
+    val url = "http://api.search.nicovideo.jp/api/snapshot/version"
+    
+    var is: InputStream = null
+    var br: BufferedReader = null
+    try{
+      val connect = new URL(url).openConnection().asInstanceOf[HttpURLConnection]
+      is = connect.getInputStream
+      br = new BufferedReader(new InputStreamReader(is, "UTF-8"))  
+      
+      val lines = Iterator.continually(br.readLine()).takeWhile(_ != null).toList
+      Right(lines.map(_.decodeOption[LastModified]).head)
+    } catch {
+      case e: IOException => Left(e)
+    } finally {
+      if(null != is) {
+        is.close()
+      }
+      if(null != br) {
+        br.close()
+      }
+    }
+    
   }
 }
 
