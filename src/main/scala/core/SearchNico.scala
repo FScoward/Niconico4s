@@ -87,10 +87,10 @@ object SearchNico {
     // postした結果の取得
     val is: InputStream = connect.getInputStream
     val br = new BufferedReader(new InputStreamReader(is, "UTF-8"))
+    
+    val lines = Iterator.continually(br.readLine()).takeWhile(_ != null).toList
 
-    val result = br.lines().collect(Collectors.toList()).mkString("\n").split("\n")
-
-    val encodedResult = result(0).decodeOption[Result]
+    val encodedResult = lines(0).decodeOption[Result]
     encodedResult.flatMap(result => result.values)
   }
 }
