@@ -18,8 +18,8 @@ class SearchSpec extends Specification {
         val result = Search.search(cookie, "大橋彩香")
       }
       */
-      val query = Query("高垣彩陽", List(Service.video), Keyword(), List(Join.cmsid, Join.title, Join.view_counter), None, None, None, None, None, "issue")
-      SearchNico.search(query) must beSome
+      val query = Query("高垣彩陽", List(Service.video), Keyword(), List(Join.cmsid, Join.title, Join.view_counter), None, Some("start_time"), None, None, None, "NicoNico4s")
+      SearchNico.search(query) must beRight
     }
   }
 

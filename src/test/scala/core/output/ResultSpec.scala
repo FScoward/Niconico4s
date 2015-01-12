@@ -32,7 +32,6 @@ class ResultSpec extends Specification {
   def is =
     s2"""
          ${
-      println(encodedJson)
       encodedJson must beSome
     }
         
