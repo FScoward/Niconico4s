@@ -52,7 +52,6 @@ object SearchNico {
   @deprecated
   def search(cookie: Cookie, word: String): Option[DataInfoList] = {
     val encodedWord = URLEncoder.encode(word, "utf-8")
-    println(encodedWord)
 
     val url = s"http://ext.nicovideo.jp/api/search/search/$encodedWord?mode=watch&page=1&sort=f&order=d"
 

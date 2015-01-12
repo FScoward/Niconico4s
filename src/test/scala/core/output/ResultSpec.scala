@@ -34,7 +34,5 @@ class ResultSpec extends Specification {
          ${
       encodedJson must beSome
     }
-        
-        
       """
 }
