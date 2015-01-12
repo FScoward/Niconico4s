@@ -73,9 +73,9 @@ object SearchNico {
    * 
    * @param query 検索クエリ
    * @author FScoward
-   * @return {{{Either[IOException, Option[List[Value]]]}}}
+   * @return {{{Either[IOException, List[Result]]}}}
    * */
-  def search(query: Query): Either[IOException, Option[List[output.Value]]] = {
+  def search(query: Query): Either[IOException, List[Result]] = {
     val endpoint = "http://api.search.nicovideo.jp/api/snapshot/"
 
     var outputStream: OutputStream = null
@@ -99,9 +99,10 @@ object SearchNico {
       br = new BufferedReader(new InputStreamReader(is, "UTF-8"))
 
       val lines = Iterator.continually(br.readLine()).takeWhile(_ != null).toList
+      
+      val resultList: List[Result] = lines.map(_.decodeOption[Result]).flatten
 
-      val encodedResult = lines(0).decodeOption[Result]
-      Right(encodedResult.flatMap(result => result.values))
+      Right(resultList)
     } catch {
       case e: IOException => Left(e)
     } finally {
