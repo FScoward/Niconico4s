@@ -68,30 +68,46 @@ object SearchNico {
     Parse.decodeOption[DataInfoList](json)
   }
 
-  def search(query: Query): Option[List[output.Value]] = {
+  def search(query: Query): Either[IOException, Option[List[output.Value]]] = {
     val endpoint = "http://api.search.nicovideo.jp/api/snapshot/"
 
-    val connect = new URL(endpoint).openConnection().asInstanceOf[HttpURLConnection]
-    // POST可能にする
-    connect.setDoOutput(true)
-    connect.setRequestProperty("Content-Type", "application/json; charset=utf8")
+    var outputStream: OutputStream = null
+    var is: InputStream = null
+    var br: BufferedReader = null
+    try {
+      val connect = new URL(endpoint).openConnection().asInstanceOf[HttpURLConnection]
+      // POST可能にする
+      connect.setDoOutput(true)
+      connect.setRequestProperty("Content-Type", "application/json; charset=utf8")
 
-    val outputStream = connect.getOutputStream
-    val postData = query.jencode.nospaces
+      outputStream = connect.getOutputStream
+      val postData = query.jencode.nospaces
 
-    //    val outputStremWriter = new OutputStreamWriter(outputStream)
-    // データをpostする
-    outputStream.write(postData.getBytes("UTF-8"))
-    outputStream.close()
+      //    val outputStremWriter = new OutputStreamWriter(outputStream)
+      // データをpostする
+      outputStream.write(postData.getBytes("UTF-8"))
 
-    // postした結果の取得
-    val is: InputStream = connect.getInputStream
-    val br = new BufferedReader(new InputStreamReader(is, "UTF-8"))
-    
-    val lines = Iterator.continually(br.readLine()).takeWhile(_ != null).toList
+      // postした結果の取得
+      is = connect.getInputStream
+      br = new BufferedReader(new InputStreamReader(is, "UTF-8"))
 
-    val encodedResult = lines(0).decodeOption[Result]
-    encodedResult.flatMap(result => result.values)
+      val lines = Iterator.continually(br.readLine()).takeWhile(_ != null).toList
+
+      val encodedResult = lines(0).decodeOption[Result]
+      Right(encodedResult.flatMap(result => result.values))
+    } catch {
+      case e: IOException => Left(e)
+    } finally {
+      if(null != outputStream) {
+        outputStream.close()
+      }
+      if(null != is) {
+        is.close()
+      }
+      if(null != br) {
+        br.close()
+      }
+    }
   }
 }
 
