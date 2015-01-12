@@ -17,6 +17,7 @@ class SearchSpec extends Specification {
     s2"""
          getLastModified $e1
          search          $e2
+         search(cookie, 高垣彩陽) $pending
       """
 
   def e1 = {
@@ -25,7 +26,17 @@ class SearchSpec extends Specification {
   
   def e2 = {
     val query = Query("高垣彩陽", List(Service.video), Keyword(), List(Join.cmsid, Join.title, Join.view_counter), None, Some(SortBy.start_time), None, None, None, "NicoNico4s")
-    SearchNico.search(query) must beRight[Option[List[Value]]]
+    
+    val searchResult = SearchNico.search(query)
+    
+    /*
+    searchResult match {
+      case Right(r) => println(r.get)
+      case Left(l) => println("error")
+    }
+    */
+    
+    searchResult must beRight[Option[List[Value]]]
   }
   
   /*
@@ -40,6 +51,21 @@ class SearchSpec extends Specification {
       val query = Query("高垣彩陽", List(Service.video), Keyword(), List(Join.cmsid, Join.title, Join.view_counter), None, Some(SortBy.start_time), None, None, None, "NicoNico4s")
       SearchNico.search(query) must beRight
     }
+  }
+  */
+  
+  /*
+  def e3 = {
+    val cookie = NicoAuth.authenticate(Configuration.email, Configuration.password)
+    val list = SearchNico.search(cookie.get, "idol")
+    for{
+      d <- list
+      dl <- d.list
+    } {
+      println(dl.title)
+    }
+      
+    ok
   }
   */
 }
