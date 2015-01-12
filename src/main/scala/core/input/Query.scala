@@ -14,8 +14,8 @@ case class Query(query: String,
                   filters: Option[List[Filter]],
                   sort_by: Option[SortBy],
                   order: Option[String],
-                  from: Option[Int],
-                  size: Option[Int],
+                  from: Int = 0,
+                  size: Int = 10,
                   issuer: String)
 
 object Query{

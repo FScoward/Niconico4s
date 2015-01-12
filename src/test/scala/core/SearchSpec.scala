@@ -7,7 +7,7 @@ package core
 import auth.{Cookie, NicoAuth}
 import conf.Configuration
 import core.input._
-import core.output.{Value, LastModified}
+import core.output.{Result, Value, LastModified}
 import org.specs2._
 import org.specs2.specification._
 
@@ -25,18 +25,16 @@ class SearchSpec extends Specification {
   }
   
   def e2 = {
-    val query = Query("高垣彩陽", List(Service.video), Keyword(), List(Join.cmsid, Join.title, Join.view_counter), None, Some(SortBy.start_time), None, None, None, "NicoNico4s")
+    val query = Query("高垣彩陽", List(Service.video), Keyword(), List(Join.cmsid, Join.title, Join.view_counter), None, Some(SortBy.start_time), None, 0, 10, "NicoNico4s")
     
     val searchResult = SearchNico.search(query)
     
-    /*
     searchResult match {
-      case Right(r) => println(r.get)
+      case Right(r) => println(r)
       case Left(l) => println("error")
     }
-    */
     
-    searchResult must beRight[Option[List[Value]]]
+    searchResult must beRight[List[Result]]
   }
   
   /*
